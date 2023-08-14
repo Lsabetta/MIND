@@ -11,7 +11,7 @@ import shutil
 PATH_DATASET = '/root/data/core50_128x128/*'
 
 
-shutil.copytree(PATH_DATASET, '/root/data/core50_64x64/')
+shutil.copytree(PATH_DATASET[:-1], '/root/data/core50_64x64/')
 
 list_folder = glob.glob(PATH_DATASET)
 print(list_folder, len(list_folder))

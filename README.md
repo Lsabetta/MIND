@@ -81,15 +81,15 @@ unzip tiny-imagenet-200.zip
 ---
 ### Synbols (requires generation)
 
-- Setup 1:
+- Setup 1 (outside our docker): 
 
     In order to run the experiments on Synbols dataset, we need to generate the dataset first. To do so, we need to install the synbols package from the [official repository](https://github.com/ServiceNow/synbols).
 
-- Setup 2:
+- Setup 2 (outside our docker):
 
     Then we can generate the dataset by running the notebook `./utils/generate_synbols.ipynb`. The script will output two zip that you will put in your data folder. That's enough, the experiments will take care of everything.
 
-- Step 3:
+- Step 3 (inside our docker):
     
     To run the experiments (Table 1.A), run:
 
