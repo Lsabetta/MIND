@@ -1,0 +1,6 @@
+__pycache__/
+utils/__pycache__/
+models/__pycache__/
+
+logs/
+*.pyc
