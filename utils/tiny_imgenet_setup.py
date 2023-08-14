@@ -4,7 +4,6 @@ import argparse
 
 
 
-
 def create_val_img_folder(args):
     '''
     This method is responsible for separating validation images into separate sub folders
@@ -32,9 +31,10 @@ def create_val_img_folder(args):
 
 parser = argparse.ArgumentParser(description='PyTorch Tiny ImageNet Setup')
 
-parser.add_argument('--data_dir', default='/home/jb/data')
+parser.add_argument('--data_dir', default='/path/to/your/data')
 parser.add_argument('--dataset', default='tiny-imagenet-200')  
 
 if __name__ == '__main__':
+    # STORE YOUR DATA INTO /path/to/your/data/tiny-imagenet-200
     args = parser.parse_args()
     create_val_img_folder(args)

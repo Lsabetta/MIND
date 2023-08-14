@@ -3,11 +3,17 @@ import cv2
 import os
 import glob
 
-#copy in data core50_128x128 into core50_128x128_old
-#change home/jb/ into your correct folder
-path_dataset = '/home/leonardolabs/data/core50_128x128_old/*'
 
-list_folder = glob.glob(path_dataset)
+## IMPORTANT READ THIS BEFORE RUNNING THIS SCRIPT ###
+
+# Create a folder called core50_128x128_old
+# Copy ALL core50_128x128 into core50_128x128_old
+# the continuum library works only with the path set to core50_128x128
+# so we need to change the path of the resized images to core50_128x128
+
+PATH_DATASET = '/path/to/your/data/core50_128x128_old/*'
+
+list_folder = glob.glob(PATH_DATASET)
 print(list_folder, len(list_folder))
 #import ipdb; ipdb.set_trace()
 for folder in list_folder:
