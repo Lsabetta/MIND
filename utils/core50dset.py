@@ -13,7 +13,7 @@ class Core50Dataset(Dataset):
     """ Scenario Dataset for Core50 it requires a scenario number  """
     
     def __init__(self, data_path, object_n, transform=None):
-        self.data_path = data_path+'/core50_128x128/'
+        self.data_path = data_path+'/core50_64x64/'
         self.transform = transform
         self.object_n = object_n+1
         self._set_data_and_labels()
@@ -147,7 +147,7 @@ class Core50DatasetScenario(Dataset):
     """ Scenario Dataset for Core50 it requires a scenario number  """
     
     def __init__(self, data_path, transform=None):
-        self.data_path = data_path+'/core50_128x128/'
+        self.data_path = data_path+'/core50_64x64/'
         self.transform = transform
         self.scenario_n = -1
 

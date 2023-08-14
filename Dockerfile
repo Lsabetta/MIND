@@ -8,3 +8,4 @@ RUN  apt install -y python3.10
 RUN  apt install -y python3-pip
 RUN  apt-get install ffmpeg libsm6 libxext6  -y
 RUN  pip3 install --no-cache-dir -r requirements.txt
+RUN alias python=python3

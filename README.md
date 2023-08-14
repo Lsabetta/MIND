@@ -8,7 +8,7 @@
 
 - Step 2:
 
-    Run your image : `docker run -it --gpus all -v "/path_to_MIND_folder":/MIND mind:1.0 /bin/bash`
+    Run your image : `docker run -it --gpus all -v "/path_to_dataset_folder":/root/data -v "/path_to_MIND_folder":/MIND mind:1.0 /bin/bash`
 
 
 # Experiements
@@ -29,7 +29,11 @@ all the outputs will be logged in the `./logs/cifar100_experiment` folder (accur
 
 ---
 ### CORE50_CI/10 (requires setup)
-
+Download the dataset and unzip it into your dataset folder (the folder that you have mounted into your docker image 'path_to_dataset_folder')
+```
+wget download the dataset from http://bias.csr.unibo.it/maltoni/download/core50/core50_128x128.zip
+unzip core50_128x128.zip 
+```
 
 - Step 1:
 
@@ -38,8 +42,6 @@ all the outputs will be logged in the `./logs/cifar100_experiment` folder (accur
     cd ./utils
     python resize_core50.py
     ```
-    Download shoud take place automatically from continuum. If not, please download the dataset from the official website.
-
 
 - Step 2:
 
@@ -52,7 +54,12 @@ all the outputs will be logged in the `./logs/cifar100_experiment` folder (accur
 ---
 ### TinyImgNet/10 (requires setup)
 
-Download the dataset from kaggle. Then we need to prepare the folder structure to work with continuum as follows:
+Download the dataset and unzip it intop your dataset folder.
+```
+wget http://cs231n.stanford.edu/tiny-imagenet-200.zip
+unzip tiny-imagenet-200.zip
+```
+ Then we need to prepare the folder structure to work with continuum as follows:
 
 
 - Step 1:
