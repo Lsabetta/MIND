@@ -15,6 +15,9 @@
 
 For each dataset we make available a bashscript (i.e. Cifar100_exp.sh) containing the parameters used to obtain the results reported in the paper. Each script will run 10 experiemnts with 10 different seeds.
 
+### Data Path setup
+Before running everything, go to main.py and set the data path (line number 31) to the folder where you want to store the data. The data will be either downloaded automatically from continuum or needs to be downloaded there.
+
 
 ### CIFAR100/10 (works out of the box)
 To run the experiments on CIFAR100/10 dataset in class incremental (Table 1.A), run the following command:
