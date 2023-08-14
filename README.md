@@ -20,7 +20,7 @@ For each dataset we make available a bashscript (i.e. Cifar100_exp.sh) containin
 To run the experiments on CIFAR100/10 dataset in class incremental (Table 1.A), run the following command:
 
 ```
-sh exp/cifar100_exp.sh
+sh cifar100_exp.sh
 ```
 all the outputs will be logged in the `./logs/cifar100_experiment` folder (accuracies, losses, plots) and in the terminal.
 
@@ -42,7 +42,7 @@ all the outputs will be logged in the `./logs/cifar100_experiment` folder (accur
 
     To run the experiments on CORE50/10 dataset in class incremental (Table 1.A), run:
     ```
-    sh exp/core50ci_exp.sh
+    sh core50ci_exp.sh
     ```
     all the outputs will be logged in the `./logs/core_experiment` folder (accuracies, losses, plots) and in the terminal.
 
@@ -64,7 +64,7 @@ Download the dataset from kaggle. Then we need to prepare the folder structure t
     To run the experiments (Table 1.A), run:
 
     ```
-    sh exp/tinyimgnet_exp.sh
+    sh tinyimgnet_exp.sh
     ```
     all the outputs will be logged in the `./logs/tinyimgnet_experiment` folder (accuracies, losses, plots) and in the terminal.
 
@@ -84,6 +84,6 @@ Download the dataset from kaggle. Then we need to prepare the folder structure t
     To run the experiments (Table 1.A), run:
 
     ```
-    sh exp/synbols_exp.sh
+    sh synbols_exp.sh
     ```
     all the outputs will be logged in the `./logs/synbols_experiment` folder (accuracies, losses, plots) and in the terminal.
