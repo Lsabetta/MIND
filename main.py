@@ -195,7 +195,7 @@ def main():
         # selects subset of neurons, prune non selected weights
         if strategy.warmup:
             strategy.optimizer = torch.optim.AdamW(strategy.model.parameters(), lr=args.lr_distillation, weight_decay=args.wd_distillation)
-            strategy.warmup()
+            strategy.warmup_train()
 
         if not args.load_model_from_run:
             with torch.no_grad():

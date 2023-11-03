@@ -201,7 +201,7 @@ class MIND():
         return self.loss_ce, self.loss_distill
 
 
-    def warmup(self):
+    def warmup_train(self):
         for epoch in range(10):
             # to ripristinate the model
             base_model = deepcopy(self.model)
