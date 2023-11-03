@@ -7,7 +7,7 @@ import math
 class Pruner(object):
     """Performs pruning on the given model."""
 
-    def __init__(self, model, train_bias, train_bn):
+    def __init__(self, model, train_bias, train_bn, warmup):
         self.train_bias = train_bias
         self.train_bn = train_bn
 
@@ -17,7 +17,7 @@ class Pruner(object):
             if isinstance(module, nn.Conv2d) or isinstance(module, nn.Linear):
                 mask = torch.ones(module.weight.size(), dtype=torch.int8)
                 self.masks[module_idx] = mask * -1
-
+        self.warmup = warmup
 
     def select_random_weights(self, weights, mask):
 
@@ -83,15 +83,21 @@ class Pruner(object):
                 self.masks[module_idx] = self.masks[module_idx].to(module.weight.device)
                 #if it is the last layer, assign to the mask only the weights connecting to the new classes
                 if module_idx == n_modules-2 and args.dataset != 'CORE50' and not args.self_distillation:
-                    subset = torch.zeros_like(self.masks[module_idx])
-                    subset[experience_idx*args.classes_per_exp:(experience_idx+1)*args.classes_per_exp, :] = 1
-                    #convert subset to bool
-                    subset = subset.to(torch.bool)
+                    if not self.warmup:
+                        subset = torch.zeros_like(self.masks[module_idx])
+                        subset[experience_idx*args.classes_per_exp:(experience_idx+1)*args.classes_per_exp, :] = 1
+                        #convert subset to bool
+                        subset = subset.to(torch.bool)
+                    else:
+                        subset = self.most_important_weights_mask(module.weight, self.masks[module_idx])
                 else:
                     if args.self_distillation:
                         subset= self.most_important_weights_mask(module.weight, self.masks[module_idx])
                     else:
-                        subset= self.select_random_weights(module.weight, self.masks[module_idx])
+                        if not self.warmup:
+                            subset= self.select_random_weights(module.weight, self.masks[module_idx])
+                        else:
+                            subset = self.most_important_weights_mask(module.weight, self.masks[module_idx])
                 self.masks[module_idx][subset] = experience_idx
 
                 #when self distillation, set fresh model weights as starting point

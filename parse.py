@@ -30,12 +30,12 @@ def get_args():
 
     parser.add_argument("--wd", type=float, default=0.0)
     parser.add_argument("--lr", type=float, default=0.005)
-    parser.add_argument("--epochs", type=int, default=4) # <------- epochs train
+    parser.add_argument("--epochs", type=int, default=50) # <------- epochs train
     parser.add_argument("--scheduler", type=int, nargs='+', default=[35,50])
 
     parser.add_argument("--wd_distillation", type=float, default=0)
     parser.add_argument("--lr_distillation", type=float, default=0.035)
-    parser.add_argument("--epochs_distillation", type=int, default=4) # <------- epochs distillation
+    parser.add_argument("--epochs_distillation", type=int, default=50) # <------- epochs distillation
     parser.add_argument("--distill_beta", type=float, default=5)
     parser.add_argument("--scheduler_distillation", type=int, nargs='+', default=[40,60])
     parser.add_argument("--details", type=str, nargs ='+', default="baseline cifar100")

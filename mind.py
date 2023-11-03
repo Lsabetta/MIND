@@ -23,8 +23,10 @@ class MIND():
         self.model = model
         self.criterion = CrossEntropyLoss(label_smoothing=0.)
 
+        self.warmup = False
+
         # params pruner
-        self.pruner = Pruner(self.model, train_bias=False, train_bn=False)
+        self.pruner = Pruner(self.model, train_bias=False, train_bn=False, warmup=self.warmup)
         self.distillation = False
 
         #param distill
@@ -65,6 +67,20 @@ class MIND():
         dist = ((dist1+dist2)/2).mean()
 
         return dist
+    
+    def get_distill_loss_kl_divergence(self):
+        """ KL divergence loss. """
+        with torch.no_grad():
+            old_y = self.distill_model.forward(self.mb_x)
+
+        new_y = self.mb_output
+        soft_log_old = torch.nn.functional.log_softmax(old_y+10e-5, dim=1)
+        soft_log_new = torch.nn.functional.log_softmax(new_y+10e-5, dim=1)
+
+        kl_div = torch.nn.functional.kl_div(soft_log_new+10e-5, soft_log_old+10e-5, reduction='batchmean', log_target=True)
+
+        return kl_div
+        
 
 
     def train(self):
@@ -94,8 +110,8 @@ class MIND():
                                                                self.experience_idx,
                                                                self.distillation,
                                                                plot=True)
-
                     f.write(f"{self.experience_idx},{self.distillation},{epoch},{acc_train:.4f},{acc_test:.4f}\n")
+                print(f"    loss_ce:{loss_ce:.4f}, loss_distill:{loss_distill:.4f}")
 
         if self.distillation:
             self.model.save_bn_params(self.experience_idx)
@@ -163,7 +179,9 @@ class MIND():
             self.mb_output = self.model.forward(self.mb_x.to(args.device))
 
             if args.distill_beta > 0:
-                self.loss_distill = args.distill_beta*self.get_distill_loss()
+                #self.loss_distill = args.distill_beta*self.get_distill_loss()
+                self.loss_distill = args.distill_beta*self.get_distill_loss_kl_divergence()
+                
 
             self.loss_ce = self.get_ce_loss()
             self.loss += self.loss_ce + self.loss_distill
@@ -183,3 +201,42 @@ class MIND():
         return self.loss_ce, self.loss_distill
 
 
+    def warmup(self):
+        for epoch in range(10):
+            # to ripristinate the model
+            base_model = deepcopy(self.model)
+            # freeze the model
+            freeze_model(base_model)
+
+            self.model.train()
+
+            for i, (self.mb_x, self.mb_y, self.mb_t) in enumerate(self.train_dataloader):
+                self.mb_x = self.mb_x.to(args.device)
+                self.loss = torch.tensor(0.).to(args.device)
+                self.loss_ce = torch.tensor(0.).to(args.device)
+                self.mb_output = self.model.forward(self.mb_x.to(args.device))
+
+                self.loss_ce = self.get_ce_loss()
+                self.loss += self.loss_ce
+                self.loss.backward()
+                
+                self.optimizer.step()
+                self.optimizer.zero_grad()
+
+                
+                freeze_model(self.model)
+                self.pruner.ripristinate_weights(self.model, base_model, -1, self.distillation)
+                unfreeze_model(self.model)
+            if (epoch) % self.log_every == 0 or epoch+1 == self.train_epochs:
+                print("WARMUP")
+                acc_train, acc_test = test_during_training(self.pruner,
+                                                           self.train_dataloader,
+                                                           self.val_dataloader,
+                                                           self.model,
+                                                           self.fresh_model,
+                                                           self.scheduler,
+                                                           epoch,
+                                                           self.experience_idx,
+                                                           self.distillation,
+                                                           plot=True)
+                print(f"    loss_ce:{self.loss_ce:.4f}, loss_distill:{self.loss_distill:.4f}")

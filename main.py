@@ -193,6 +193,10 @@ def main():
 
         ########### FINETUNING/DISTILLATION ################
         # selects subset of neurons, prune non selected weights
+        if strategy.warmup:
+            strategy.optimizer = torch.optim.AdamW(strategy.model.parameters(), lr=args.lr_distillation, weight_decay=args.wd_distillation)
+            strategy.warmup()
+
         if not args.load_model_from_run:
             with torch.no_grad():
                 strategy.pruner.prune(strategy.model, strategy.experience_idx, strategy.distill_model, args.self_distillation)
@@ -227,7 +231,7 @@ def main():
             pkl.dump(strategy.model.bn_weights, open(f"logs/{args.run_name}/checkpoints/bn_weights.pkl", "wb"))
 
     # push results to excel
-    # push_results(args, total_acc, task_acc, accuracy_e, accuracy_taw)
+    push_results(args, total_acc, task_acc, accuracy_e, accuracy_taw)
 
 
 if __name__ == "__main__":
