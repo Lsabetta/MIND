@@ -239,4 +239,4 @@ class MIND():
                                                            self.experience_idx,
                                                            self.distillation,
                                                            plot=True)
-                print(f"    loss_ce:{self.loss_ce:.4f}, loss_distill:{self.loss_distill:.4f}")
+                print(f"    loss_ce:{self.loss_ce:.4f}")
