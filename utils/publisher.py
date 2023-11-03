@@ -70,7 +70,7 @@ def publish(data):
 
 def push_results(args, total_acc, task_accuracy, accuracy_e, accuracy_taw):
     #keys = [k for k in vars(args)]+["test accuracy", "task accuracy"]
-    blacklist = ["cuda","device", "n_classes", "classes_per_exp", "details", "num_workers"]
+    blacklist = ["cuda","device", "n_classes", "classes_per_exp", "details", "num_workers", "log_every", "plot_gradients_of_layer"]
     repo = Repository(".")
     branch_name = repo.head.name.split("/")[-1]
     last_commit_id = repo[repo.head.target].hex

@@ -227,7 +227,7 @@ def main():
             pkl.dump(strategy.model.bn_weights, open(f"logs/{args.run_name}/checkpoints/bn_weights.pkl", "wb"))
 
     # push results to excel
-    # push_results(args, total_acc, task_acc, accuracy_e, accuracy_taw)
+    push_results(args, total_acc, task_acc, accuracy_e, accuracy_taw)
 
 
 if __name__ == "__main__":
