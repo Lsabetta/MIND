@@ -6,6 +6,7 @@ from test_fn import test_during_training
 from parse import args
 from torch.nn import CrossEntropyLoss
 from utils.viz import plt_masks_grad_weight
+import torch.nn.functional as F
 
 class MIND():
 
@@ -48,7 +49,7 @@ class MIND():
         return self.criterion(self.mb_output, self.mb_y.to(args.device))
 
 
-    def get_distill_loss(self):
+    def get_distill_loss_JS(self):
         """ Distillation loss. (jensen-shannon) """
         with torch.no_grad():
             old_y = self.distill_model.forward(self.mb_x)
@@ -66,6 +67,39 @@ class MIND():
 
         return dist
 
+    def get_distill_loss_KL(self):
+        """ KL divergence loss. """
+        with torch.no_grad():
+            old_y = self.distill_model.forward(self.mb_x)
+
+        new_y = self.mb_output
+        soft_log_old = torch.nn.functional.log_softmax(old_y+10e-5, dim=1)
+        soft_log_new = torch.nn.functional.log_softmax(new_y+10e-5, dim=1)
+
+        kl_div = torch.nn.functional.kl_div(soft_log_new+10e-5, soft_log_old+10e-5, reduction='batchmean', log_target=True)
+
+        return kl_div
+    def get_distill_loss_Cosine(self):
+        """ Cosine distance loss. """
+        with torch.no_grad():
+            old_y = self.distill_model.forward(self.mb_x)
+        new_y = self.mb_output
+        old_y_norm = F.normalize(old_y, dim=1)
+        new_y_norm = F.normalize(new_y, dim=1)
+
+        cosine_sim = F.cosine_similarity(new_y_norm, old_y_norm, dim=1)
+
+        return 1 - cosine_sim.mean()
+    def get_distill_loss_L2(self):
+    
+        """ L2 distance loss. """
+        with torch.no_grad():
+            old_y = self.distill_model.forward(self.mb_x)
+
+        new_y = self.mb_output
+        l2_distance = F.pairwise_distance(new_y, old_y)
+
+        return l2_distance.mean()
 
     def train(self):
 
@@ -163,7 +197,15 @@ class MIND():
             self.mb_output = self.model.forward(self.mb_x.to(args.device))
 
             if args.distill_beta > 0:
-                self.loss_distill = args.distill_beta*self.get_distill_loss()
+                if args.distill_loss == 'JS':
+                    self.loss_distill = args.distill_beta*self.get_distill_loss_JS()
+                elif args.distill_loss == 'KL':
+                    self.loss_distill = args.distill_beta*self.get_distill_loss_KL()
+                elif args.distill_loss == 'Cosine':
+                    self.loss_distill = args.distill_beta*self.get_distill_loss_Cosine()
+                elif args.distill_loss == 'L2':
+                    self.loss_distill = args.distill_beta*self.get_distill_loss_L2()
+
 
             self.loss_ce = self.get_ce_loss()
             self.loss += self.loss_ce + self.loss_distill

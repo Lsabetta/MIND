@@ -46,6 +46,8 @@ def get_args():
     parser.add_argument("--plot_gradients", action ="store_false")
     parser.add_argument("--log_every", type=int, default=2)
     parser.add_argument("--plot_gradients_of_layer", type=int, default=1)
+    parser.add_argument("--distill_loss", type=str, default="JS")
+
     
 
     options = parser.parse_args()
