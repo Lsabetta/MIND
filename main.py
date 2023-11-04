@@ -25,7 +25,7 @@ from utils.tiny_imagenet_dset import get_all_tinyImageNet_data
 from utils.synbols_dset import get_synbols_data
 from continuum.datasets import InMemoryDataset
 from continuum.scenarios import ContinualScenario
-
+from time import time
 
 def main():
     data_path = os.path.expanduser('~/data')
@@ -227,7 +227,14 @@ def main():
             pkl.dump(strategy.model.bn_weights, open(f"logs/{args.run_name}/checkpoints/bn_weights.pkl", "wb"))
 
     # push results to excel
-    push_results(args, total_acc, task_acc, accuracy_e, accuracy_taw)
+    unpublished = True
+    while unpublished:
+        try:
+            push_results(args, total_acc, task_acc, accuracy_e, accuracy_taw)
+            unpublished = False
+        except:
+            "Failed to push results, retrying in 1s"
+            time.sleep(1)
 
 
 if __name__ == "__main__":

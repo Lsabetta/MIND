@@ -84,10 +84,7 @@ class MIND():
         with torch.no_grad():
             old_y = self.distill_model.forward(self.mb_x)
         new_y = self.mb_output
-        old_y_norm = F.normalize(old_y, dim=1)
-        new_y_norm = F.normalize(new_y, dim=1)
-
-        cosine_sim = F.cosine_similarity(new_y_norm, old_y_norm, dim=1)
+        cosine_sim = F.cosine_similarity(new_y, old_y, dim=1)
 
         return 1 - cosine_sim.mean()
     def get_distill_loss_L2(self):
@@ -100,6 +97,7 @@ class MIND():
         l2_distance = F.pairwise_distance(new_y, old_y)
 
         return l2_distance.mean()
+    
 
     def train(self):
 
@@ -130,6 +128,8 @@ class MIND():
                                                                plot=True)
 
                     f.write(f"{self.experience_idx},{self.distillation},{epoch},{acc_train:.4f},{acc_test:.4f}\n")
+                #print loss
+                #print(f"loss_ce: {loss_ce:.4f}, loss_distill: {loss_distill:.4f}")
 
         if self.distillation:
             self.model.save_bn_params(self.experience_idx)
@@ -202,10 +202,10 @@ class MIND():
                 elif args.distill_loss == 'KL':
                     self.loss_distill = args.distill_beta*self.get_distill_loss_KL()
                 elif args.distill_loss == 'Cosine':
-                    self.loss_distill = args.distill_beta*self.get_distill_loss_Cosine()
+                    self.loss_distill = args.distill_beta*self.get_distill_loss_Cosine()*10.
                 elif args.distill_loss == 'L2':
                     self.loss_distill = args.distill_beta*self.get_distill_loss_L2()
-
+                
 
             self.loss_ce = self.get_ce_loss()
             self.loss += self.loss_ce + self.loss_distill
