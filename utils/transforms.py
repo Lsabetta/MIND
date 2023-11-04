@@ -32,16 +32,18 @@ custom_transforms = [
     transforms.RandomChoice([
         transforms.ColorJitter(brightness=.5, hue=.3),
         transforms.GaussianBlur(kernel_size=5, sigma=(1, 2.5)),
-        transforms.RandomRotation(degrees=(0, 180))
+        transforms.ColorJitter(brightness=.5, hue=.3),
+        #transforms.RandomPerspective(distortion_scale=0.6, p=1.0),
+        transforms.RandomRotation(degrees=(0, 180)),
+        #transforms.RandomAffine(degrees=(30, 70), translate=(0.1, 0.3), scale=(0.5, 0.75)),
+        #transforms.RandomInvert(),
+        transforms.RandomPosterize(bits=2),
+        transforms.RandomSolarize(threshold=192.0),
+        transforms.RandomAdjustSharpness(sharpness_factor=2),
+        transforms.RandomAutocontrast(),
+        transforms.RandomEqualize()
+
     ]),
-    transforms.Lambda(lambda img: ImageEnhance.Contrast(img).enhance(2.0)),
-    transforms.RandomAffine(degrees=0, translate=(0.2, 0)),
-    transforms.RandomAffine(degrees=0, translate=(0, 0.2)),
-    transforms.Lambda(lambda img: ImageEnhance.Sharpness(img).enhance(2.0)),
-    transforms.Lambda(lambda img: img.convert('L').convert('RGB')),
-    transforms.Lambda(lambda img: ImageOps.posterize(img, bits=4)),
-    transforms.ColorJitter(brightness=0.2),
-    transforms.Lambda(lambda img: ImageEnhance.Sharpness(img).enhance(2.0)),
     transforms.ToTensor(),
     transforms.Normalize(
         (0.5071, 0.4865, 0.4409), (0.2673, 0.2564, 0.2762)
