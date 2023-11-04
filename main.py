@@ -10,7 +10,7 @@ from mind import MIND
 from copy import deepcopy
 from utils.generic import freeze_model, set_seed, setup_logger
 from utils.publisher import push_results
-from utils.transforms import to_tensor_and_normalize, default_transforms,default_transforms_core50,\
+from utils.transforms import custom_transforms, to_tensor_and_normalize, default_transforms,default_transforms_core50,\
     to_tensor_and_normalize_core50,default_transforms_TinyImageNet,to_tensor_and_normalize_TinyImageNet, default_transforms_Synbols,to_tensor_and_normalize_Synbols
 from torchvision.datasets import CIFAR100
 from torch.utils.data import DataLoader
@@ -74,7 +74,7 @@ def main():
             train_dataset,
             increment=args.classes_per_exp,
             class_order=class_order,
-            transformations=default_transforms)
+            transformations=custom_transforms)
 
         strategy.test_scenario = ClassIncremental(
             test_dataset,
