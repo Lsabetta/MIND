@@ -1,4 +1,8 @@
 # MIND
+Authors: Jacopo Bonato, Francesco Pelosin, Luigi Sabetta, Alessandro Nicolosi
+
+Preprint: 
+https://arxiv.org/abs/2312.02916
 
 # Installation
 
